@@ -1,0 +1,57 @@
+# Unitree A2
+#
+# Isaac Sim spawns the USD the A2 policies were trained with; MuJoCo uses unitree_mujoco's
+# a2.xml (same 40.071 kg), see assets/robots/a2/SOURCE.md. Motor values and PD gains come
+# from each policy (spec.json).
+
+name: a2
+display_name: Unitree A2   # shown in the shared-bundle README
+
+base_body: base_link
+
+# Isaac Lab articulation joint order (spec.json joints.order = "isaac").
+joints:
+  - FL_hip_joint
+  - FR_hip_joint
+  - RL_hip_joint
+  - RR_hip_joint
+  - FL_thigh_joint
+  - FR_thigh_joint
+  - RL_thigh_joint
+  - RR_thigh_joint
+  - FL_calf_joint
+  - FR_calf_joint
+  - RL_calf_joint
+  - RR_calf_joint
+
+init:
+  height: 0.5          # root z at spawn; stands at about 0.38 m
+  joint_pos:
+    .*L_hip_joint: -0.1
+    .*R_hip_joint: 0.1
+    .*_thigh_joint: 0.9
+    .*_calf_joint: -1.8
+
+motors:
+  # Defaults; policies override with their spec.json values. Ideal PD with a torque limit.
+  - joints: [.*_hip_joint, .*_thigh_joint]
+    Y1: 120.0
+    armature: 0.03
+  - joints: [.*_calf_joint]
+    Y1: 180.0
+    armature: 0.03
+
+isaac:
+  usd: {repo: assets/robots/a2/usd/a2.usd, sha256: b4574da446352f042098737b83f100bba233290fa411539b92c95b5eb0b9f65f, bundle_dir: true}
+  enabled_self_collisions: true
+  solver_position_iteration_count: 4
+  solver_velocity_iteration_count: 0
+
+mujoco:
+  mjcf: {repo: assets/robots/a2/a2.xml}
+
+camera:
+  follow_offset: [-2.3, -1.6, 1.1]
+  target_offset: [0.0, 0.0, -0.05]
+  # Head camera streamed to the remote controller (--remote): just ahead of the front bumper.
+  head: {pos: [0.40, 0.0, 0.06], pitch_deg: 10.0, fovy: 70.0}

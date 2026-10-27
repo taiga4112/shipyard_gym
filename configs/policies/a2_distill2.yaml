@@ -1,0 +1,198 @@
+name: a2_distill2
+description: A2 distill2 / distill2_20500 (2026-10-01)
+# Shown in the shared-bundle README.
+summary: "階段とロンジの先生をまとめた蒸留ポリシー（前後 LiDAR を溜めた高さマップ 17×11 ＋ 歩行の位相、MLP）"
+summary_en: "Distilled from stair and longitudinal-beam teachers (front/rear LiDAR accumulated height map 17x11 + gait phase, MLP)"
+robot: a2
+files:
+  # Converted from checkpoint distill2_20500.pt (md5 37bae36b3c84ab4446682e09be0a5e0a)
+  # with `python -m ortsim.tools.rsl_to_onnx ... --activation elu` (normalizer folded in).
+  onnx: {repo: assets/policies/a2_distill2/policy.onnx}
+sim:
+  dt: 0.005
+  decimation: 4
+action:
+  offset: default
+observation:
+  extra_terms: []
+sensors: {}
+command:
+  # Training: UniformVelocityCommand vx -0.5..1.0, vy +-0.5, heading-driven yaw rate
+  # (clip +-1.0), resampled every 3-8 s. The tb01 videos ran at vx 0.4.
+  trained_ranges:
+    lin_vel_x: [-0.5, 1.0]
+    lin_vel_y: [-0.5, 0.5]
+    ang_vel_z: [-1.0, 1.0]
+  limits:
+    lin_vel_x: [-0.5, 1.0]
+    lin_vel_y: [-0.5, 0.5]
+    ang_vel_z: [-1.0, 1.0]
+  initial: [0.0, 0.0, 0.0]
+  accel: [0.6, 0.6, 1.2]
+  decel: [1.0, 1.0, 2.0]
+termination:
+  tilt_limit_deg: 70.0
+motors:
+- joints:
+  - FL_hip_joint
+  - FR_hip_joint
+  - RL_hip_joint
+  - RR_hip_joint
+  - FL_thigh_joint
+  - FR_thigh_joint
+  - RL_thigh_joint
+  - RR_thigh_joint
+  Y1: 120.0
+  armature: 0.03
+- joints:
+  - FL_calf_joint
+  - FR_calf_joint
+  - RL_calf_joint
+  - RR_calf_joint
+  Y1: 180.0
+  armature: 0.03
+deploy_inline:
+  step_dt: 0.02
+  default_joint_pos:
+  - -0.1
+  - 0.1
+  - -0.1
+  - 0.1
+  - 0.9
+  - 0.9
+  - 0.9
+  - 0.9
+  - -1.8
+  - -1.8
+  - -1.8
+  - -1.8
+  stiffness:
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 150.0
+  - 150.0
+  - 150.0
+  - 150.0
+  damping:
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  actions:
+    joint_pos:
+      joint_names:
+      - FL_hip_joint
+      - FR_hip_joint
+      - RL_hip_joint
+      - RR_hip_joint
+      - FL_thigh_joint
+      - FR_thigh_joint
+      - RL_thigh_joint
+      - RR_thigh_joint
+      - FL_calf_joint
+      - FR_calf_joint
+      - RL_calf_joint
+      - RR_calf_joint
+      scale: 0.25
+      clip: null
+  observations:
+    base_ang_vel:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: base_ang_vel
+    projected_gravity:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: projected_gravity
+    command:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: velocity_commands
+    phase:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: gait_phase
+      period: 0.6
+      stand_threshold: 0.1
+    joint_pos:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: joint_pos_rel
+      params:
+        asset_cfg:
+          joint_names: &id001
+          - FL_hip_joint
+          - FR_hip_joint
+          - RL_hip_joint
+          - RR_hip_joint
+          - FL_thigh_joint
+          - FR_thigh_joint
+          - RL_thigh_joint
+          - RR_thigh_joint
+          - FL_calf_joint
+          - FR_calf_joint
+          - RL_calf_joint
+          - RR_calf_joint
+    joint_vel:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: joint_vel_rel
+      params:
+        asset_cfg:
+          joint_names: *id001
+    actions:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: last_action
+    height_scan:
+      # robots/a2/lidar_accum.py with the distill2 environment (A2_LIDAR_EMA_UP 0.7,
+      # A2_LIDAR_EMA_DOWN 0.05, A2_LIDAR_STEP_DEG 3.0, A2_LIDAR_REF base, A2_LIDAR_NOISE 1.0).
+      # 187 heights ((base_z - z) / 5, 0 if unseen) then 187 unseen flags.
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: lidar_accum_map
+      mounts:   # a2.urdf front_lidar / rear_lidar in base_link
+        - {pos: [0.33767, 0.0, 0.08134], rot_wxyz: [0.5, 0.5, 0.5, 0.5]}
+        - {pos: [-0.27997, 0.0, 0.08734], rot_wxyz: [0.5, 0.5, -0.5, -0.5]}
+      vertical_fov: [-7.0, 52.0]
+      horizontal_fov: [-180.0, 180.0]
+      channels: 21
+      horizontal_res: 3.0
+      max_distance: 6.0
+      r_min: 0.15
+      r_max: 6.0
+      # Training had no cap (nothing overhead); a2run's tb01 scenes drop hits more than
+      # 0.6 m above the base so roofs and decks do not enter the map.
+      zmax: 0.6
+      resolution: 0.1
+      phase: 0.25
+      follow_half: 6.0
+      window_x: [-0.8, 0.8]
+      window_y: [-0.5, 0.5]
+      offset: 0.0
+      value_scale: 0.2
+      ema_up: 0.7
+      ema_down: 0.05
+      pose_noise: 1.0

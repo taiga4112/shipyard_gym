@@ -1,0 +1,35 @@
+name: unitree_g1_29dof_velocity_v0
+description: unitree_rl_lab deploy/robots/g1_29dof/config/policy/velocity/v0
+# Shown in the shared-bundle README.
+summary: "平地での歩行（Unitree 公式の学習済み policy。固有感覚のみ、観測履歴 5 ステップ）"
+summary_en: "Walking on flat ground (Unitree's pretrained policy; proprioception only, 5-step history)"
+robot: g1_29dof
+files:
+  # Unitree's pretrained policy shipped with unitree_rl_lab.
+  onnx: {repo: assets/policies/unitree_g1_29dof_velocity_v0/policy.onnx, sha256: 610c27e463a8f666aa50a06346678c00b4df3859f10b54bcc1f817c28251406f}
+  deploy: {repo: assets/policies/unitree_g1_29dof_velocity_v0/deploy.yaml, sha256: 64b04c0596a7010f39f8ac6e9ec46dc750141063cdcf2d42c83ecc444e57bc63}
+# unitree_rl_lab's exporter writes stiffness / damping in SDK joint order.
+deploy_gain_order: sdk
+sim:
+  dt: 0.005
+  decimation: 4
+action:
+  offset: default
+observation:
+  extra_terms: []
+sensors: {}
+command:
+  # deploy.yaml's command ranges (no training log ships with this policy).
+  trained_ranges:
+    lin_vel_x: [-0.5, 1.0]
+    lin_vel_y: [-0.3, 0.3]
+    ang_vel_z: [-0.2, 0.2]
+  limits:
+    lin_vel_x: [-0.5, 1.0]
+    lin_vel_y: [-0.3, 0.3]
+    ang_vel_z: [-0.5, 0.5]
+  initial: [0.0, 0.0, 0.0]
+  accel: [0.6, 0.6, 1.2]
+  decel: [1.0, 1.0, 2.0]
+termination:
+  tilt_limit_deg: 60.0

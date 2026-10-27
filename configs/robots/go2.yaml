@@ -1,0 +1,75 @@
+# Unitree Go2 (unitree_rl_lab)
+#
+# Isaac Sim spawns the USD the policies were trained with; MuJoCo builds the robot from
+# the URDF that USD was made from (same masses), see assets/robots/go2/SOURCE.md.
+# Motor values mirror the training-time UnitreeActuatorCfg_Go2HV (GO2HV in params/env.yaml);
+# PD gains come from each policy's deploy.yaml.
+
+name: go2
+display_name: Unitree Go2   # shown in the shared-bundle README
+urdf: {repo: assets/robots/go2/go2_description.urdf}
+
+base_body: base
+
+# Isaac Lab articulation joint order (deploy.yaml arrays index into this).
+joints:
+  - FL_hip_joint
+  - FR_hip_joint
+  - RL_hip_joint
+  - RR_hip_joint
+  - FL_thigh_joint
+  - FR_thigh_joint
+  - RL_thigh_joint
+  - RR_thigh_joint
+  - FL_calf_joint
+  - FR_calf_joint
+  - RL_calf_joint
+  - RR_calf_joint
+
+init:
+  height: 0.4          # root z above the ground at spawn (training: 0.4)
+  joint_pos:
+    .*R_hip_joint: -0.1
+    .*L_hip_joint: 0.1
+    F[L,R]_thigh_joint: 0.8
+    R[L,R]_thigh_joint: 1.0
+    .*_calf_joint: -1.5
+
+motors:
+  # Unitree Go2 HV motor (UnitreeActuatorCfg_Go2HV)
+  - joints: [.*_hip_joint, .*_thigh_joint]
+    X1: 13.5
+    X2: 30.0
+    Y1: 20.2
+    Y2: 23.4
+    Fs: 0.2
+    Fd: 0.1
+    Va: 0.01
+    armature: 0.01
+    friction: 0.0
+  - joints: [.*_calf_joint]
+    X1: 13.5
+    X2: 30.0
+    Y1: 39.22
+    Y2: 45.43
+    Fs: 0.2
+    Fd: 0.1
+    Va: 0.01
+    armature: 0.01
+    friction: 0.0
+
+isaac:
+  # The training asset (UsdFileCfg); bundle_dir ships its configuration/ sublayers too.
+  usd: {repo: assets/robots/go2/usd/go2.usd, sha256: fd3c8c23c97cea3208fae1ab5eeacba4ffa616fe5f1397be6c7edf4feb93f180, bundle_dir: true}
+  enabled_self_collisions: true
+  solver_position_iteration_count: 8
+  solver_velocity_iteration_count: 4
+
+mujoco:
+  replace_cylinders_with_capsules: true
+
+camera:
+  follow_offset: [-1.7, -1.2, 0.8]
+  target_offset: [0.0, 0.0, -0.05]
+  # Head camera streamed to the remote controller (--remote): the Go2 front camera.
+  head: {pos: [0.32, 0.0, 0.04], pitch_deg: 5.0, fovy: 70.0}

@@ -1,0 +1,28 @@
+# MuJoCo runner / tools environment, managed with uv:
+#   uv sync
+#   uv run scripts/run_mujoco.py --policy ... --scene ...
+# The Isaac Sim runner uses the Isaac Lab environment instead (see README).
+[project]
+name = "ortsim"
+version = "0.2.0"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "mujoco>=3.2",
+    "onnxruntime>=1.17",
+    "numpy",
+    "pyyaml",
+    "imageio",
+    "imageio-ffmpeg",
+    "opencv-python-headless",
+    # batched raycasts against the scene (top-down height maps) on CPU or GPU
+    "warp-lang>=1.5",
+    # scene conversion (USD -> MuJoCo meshes); only needed the first time a scene is used
+    "usd-core",
+    "coacd",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = ["pytest>=8"]

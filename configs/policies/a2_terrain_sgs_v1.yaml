@@ -1,0 +1,206 @@
+name: a2_terrain_sgs_v1
+description: A2-Terrain-SGS-v1 / 2026-10-14_20-12-31
+# Shown in the shared-bundle README.
+summary: "階段・壁・箱・溝などを越える不整地歩行（真上からの高さマップ 735 点 ＋ 歩行の位相、MLP）"
+summary_en: "Rough-terrain walking over stairs, walls, boxes and gaps (top-down height map, 735 cells, + gait phase, MLP)"
+robot: a2
+files:
+  onnx:
+    repo: assets/policies/a2_terrain_sgs_v1/policy.onnx
+    sha256: 0281b72486147125e982694a4fc6dc2196878b32a776e5ff9cec58411f0998b1
+sim:
+  dt: 0.005
+  decimation: 4
+action:
+  offset: default
+observation:
+  extra_terms: []
+sensors: {}
+command:
+  # From the run's README: flat tiles were trained with direct keyboard-style commands
+  # (vx -0.5..1.0, vy +-0.3, yaw +-1.0); spec.json's command block only lists the
+  # heading-driven terrain tiles. Measured in MuJoCo on flat ground: vx 1.0 -> 0.94,
+  # -0.4 -> -0.35, vy 0.3 -> 0.21, yaw 0.8 -> 0.83.
+  trained_ranges:
+    lin_vel_x:
+    - -0.5
+    - 1.0
+    lin_vel_y:
+    - -0.3
+    - 0.3
+    ang_vel_z:
+    - -1.0
+    - 1.0
+  limits:
+    lin_vel_x:
+    - -0.5
+    - 1.0
+    lin_vel_y:
+    - -0.3
+    - 0.3
+    ang_vel_z:
+    - -1.0
+    - 1.0
+  initial:
+  - 0.0
+  - 0.0
+  - 0.0
+  accel:
+  - 0.6
+  - 0.6
+  - 1.2
+  decel:
+  - 1.0
+  - 1.0
+  - 2.0
+termination:
+  tilt_limit_deg: 60.0
+motors:
+- joints:
+  - FL_hip_joint
+  - FR_hip_joint
+  - RL_hip_joint
+  - RR_hip_joint
+  - FL_thigh_joint
+  - FR_thigh_joint
+  - RL_thigh_joint
+  - RR_thigh_joint
+  Y1: 120.0
+  armature: 0.03
+- joints:
+  - FL_calf_joint
+  - FR_calf_joint
+  - RL_calf_joint
+  - RR_calf_joint
+  Y1: 180.0
+  armature: 0.03
+deploy_inline:
+  step_dt: 0.02
+  default_joint_pos:
+  - -0.1
+  - 0.1
+  - -0.1
+  - 0.1
+  - 0.9
+  - 0.9
+  - 0.9
+  - 0.9
+  - -1.8
+  - -1.8
+  - -1.8
+  - -1.8
+  stiffness:
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 100.0
+  - 150.0
+  - 150.0
+  - 150.0
+  - 150.0
+  damping:
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  actions:
+    joint_pos:
+      joint_names:
+      - FL_hip_joint
+      - FR_hip_joint
+      - RL_hip_joint
+      - RR_hip_joint
+      - FL_thigh_joint
+      - FR_thigh_joint
+      - RL_thigh_joint
+      - RR_thigh_joint
+      - FL_calf_joint
+      - FR_calf_joint
+      - RL_calf_joint
+      - RR_calf_joint
+      scale: 0.25
+      clip: null
+  observations:
+    base_ang_vel:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: base_ang_vel
+    projected_gravity:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: projected_gravity
+    command:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: velocity_commands
+    phase:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: gait_phase
+      period: 0.6
+      stand_threshold: 0.1
+    joint_pos:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: joint_pos_rel
+      params:
+        asset_cfg:
+          joint_names: &id001
+          - FL_hip_joint
+          - FR_hip_joint
+          - RL_hip_joint
+          - RR_hip_joint
+          - FL_thigh_joint
+          - FR_thigh_joint
+          - RL_thigh_joint
+          - RR_thigh_joint
+          - FL_calf_joint
+          - FR_calf_joint
+          - RL_calf_joint
+          - RR_calf_joint
+    joint_vel:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: joint_vel_rel
+      params:
+        asset_cfg:
+          joint_names: *id001
+    actions:
+      scale: 1.0
+      clip: null
+      history_length: 0
+      type: last_action
+    height_scan:
+      scale: 1.0
+      clip:
+      - -2.0
+      - 2.0
+      history_length: 0
+      type: grid_height_scan
+      resolution: 0.05
+      size:
+      - 1.7
+      - 1.0
+      center_ahead_x: 0.35
+      ordering: xy
+      offset: 0.5
+      sub: 3
+      ray_up: 20.0

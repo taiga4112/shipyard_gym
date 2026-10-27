@@ -1,0 +1,123 @@
+name: go2_perceptive_mid360_phase5
+description: Go2-Perceptive-Mid360-Phase5 / 2026-09-28_19-15-01
+# Shown in the shared-bundle README.
+summary: "壁や段差を越える不整地歩行（MID-360 LiDAR の高さマップ ＋ GRU）"
+summary_en: "Rough-terrain walking over walls and steps (MID-360 LiDAR height map + GRU)"
+robot: go2
+files:
+  onnx:
+    repo: assets/policies/go2_perceptive_mid360_phase5/policy.onnx
+    sha256: 5799abb083124af1c0d2aab25e779d2a2562b9e84cbd861cf6a9da5c9822b6f4
+  deploy:
+    repo: assets/policies/go2_perceptive_mid360_phase5/deploy.yaml
+    sha256: 9f33914569378ce47a7384d9604523e5f90a7dc090b6002f8c2631512de570f7
+sim:
+  dt: 0.005
+  decimation: 4
+action:
+  offset: default
+observation:
+  extra_terms: []
+  replace_terms:
+    height_scan:
+      type: lidar_elevation_map
+      sensor: mid360_scanner
+      resolution: 0.05
+      size:
+      - 1.4
+      - 1.0
+      offset: 0.273175
+      flat_fill: 0.046825000000000006
+      scanner_offset_xy:
+      - 0.0
+      - 0.0
+      motion_compensation: true
+sensors:
+  mid360_scanner:
+    type: rolling_livox
+    pattern:
+      repo: assets/sensors/mid360.npy
+    mount_pos:
+    - 0.28945
+    - 0.0
+    - -0.046825
+    mount_rot_wxyz:
+    - 0.1313159683094573
+    - 0.0
+    - 0.9913405653290647
+    - 0.0
+    samples_per_step: 4000
+    downsample: 2
+    rolling_window_start: 0
+    max_distance: 20.0
+command:
+  # Phase 5 is goal-directed (MixedGoalVelocityCommand, max_lin_vel / max_ang_vel 1.0):
+  # forward speed and yaw rate only; env.yaml's ranges are unused. Measured in MuJoCo on
+  # flat ground: vx 1.0 -> 0.70, yaw 0.8 -> 0.75; backward and sideways are not tracked.
+  trained_ranges:
+    lin_vel_x:
+    - 0.0
+    - 1.0
+    lin_vel_y:
+    - 0.0
+    - 0.0
+    ang_vel_z:
+    - -1.0
+    - 1.0
+  limits:
+    lin_vel_x:
+    - 0.0
+    - 1.0
+    lin_vel_y:
+    - 0.0
+    - 0.0
+    ang_vel_z:
+    - -1.0
+    - 1.0
+  initial:
+  - 0.0
+  - 0.0
+  - 0.0
+  accel:
+  - 0.6
+  - 0.6
+  - 1.2
+  decel:
+  - 1.0
+  - 1.0
+  - 2.0
+termination:
+  tilt_limit_deg: 45.837
+motors:
+- joints:
+  - FL_hip_joint
+  - FR_hip_joint
+  - RL_hip_joint
+  - RR_hip_joint
+  - FL_thigh_joint
+  - FR_thigh_joint
+  - RL_thigh_joint
+  - RR_thigh_joint
+  X1: 13.5
+  X2: 30.0
+  Y1: 20.2
+  Y2: 23.4
+  Fs: 0.2
+  Fd: 0.1
+  Va: 0.01
+  armature: 0.01
+  friction: 0.0
+- joints:
+  - FL_calf_joint
+  - FR_calf_joint
+  - RL_calf_joint
+  - RR_calf_joint
+  X1: 13.5
+  X2: 30.0
+  Y1: 39.22
+  Y2: 45.43
+  Fs: 0.2
+  Fd: 0.1
+  Va: 0.01
+  armature: 0.01
+  friction: 0.0
