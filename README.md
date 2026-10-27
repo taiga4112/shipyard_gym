@@ -186,6 +186,8 @@ Robot assets are grouped under `assets/robots/<robot>/`. Isaac Sim USD files and
 
 Pretrained models use the path `assets/policies/<policy>/policy.onnx`. Go2 and G1 policies also have a `deploy.yaml` in the same directory for external observation and action settings. A2 observation and action settings are included in `configs/policies/<policy>.yaml`. Policy configurations reference their models using `repo:` paths.
 
+Each policy directory, `assets/scenes/basic/`, and `assets/sensors/` also has a `SOURCE.md` describing provenance and license.
+
 ## Interpreting results
 
 - Commands outside a policy's training range can lead to poor locomotion. The console reports a warning when commands exceed that range.
