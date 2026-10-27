@@ -63,7 +63,8 @@ def parse_args():
 
 def main() -> None:
     args = parse_args()
-    if args.headless:
+    # EGL is a Linux backend; macOS and Windows use MuJoCo's platform defaults.
+    if args.headless and sys.platform.startswith("linux"):
         os.environ.setdefault("MUJOCO_GL", "egl")
     import mujoco
 

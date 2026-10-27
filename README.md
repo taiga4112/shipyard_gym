@@ -28,9 +28,8 @@ The current implementation focuses on **locomotion and terrain traversal** using
 
 | Component | Requirements |
 |---|---|
-| Common | Linux and an NVIDIA GPU |
-| Isaac Sim | Isaac Sim 5.1 and Isaac Lab 0.54, the previously verified combination. Use the Isaac Lab Python environment. |
-| MuJoCo | [uv](https://docs.astral.sh/uv/), which manages the Python environment and project dependencies |
+| Isaac Sim | Linux and an NVIDIA GPU. Isaac Sim 5.1 and Isaac Lab 0.54, the previously verified combination. Use the Isaac Lab Python environment. |
+| MuJoCo | Linux, Windows, or macOS, and [uv](https://docs.astral.sh/uv/), which manages the Python environment and project dependencies. An NVIDIA GPU is not required. |
 
 ## Quick start
 
@@ -95,6 +94,8 @@ Height-map markers are green for points observed in the current step and red for
 ### Batch recording
 
 Record a selection of scenes without opening a viewer. Output is saved to `videos/` by default. Extend the scene list using the catalog below.
+
+The loops below use Bash syntax (on Windows, use Git Bash or adapt them for PowerShell). MuJoCo uses EGL for headless rendering on Linux and the platform's default rendering backend on macOS and Windows. If you have explicitly set `MUJOCO_GL`, ensure it is supported on your OS; `egl` is not supported on macOS.
 
 ```bash
 # Isaac Sim
