@@ -4,7 +4,6 @@
 # URDF that USD was made from (same 33.341 kg), see assets/robots/g1_29dof/SOURCE.md.
 
 name: g1_29dof
-display_name: Unitree G1 (29 DoF)   # shown in the shared-bundle README
 urdf: {repo: assets/robots/g1_29dof/g1_29dof_rev_1_0.urdf}
 
 base_body: pelvis
@@ -78,7 +77,7 @@ motors:
     armature: 0.01
 
 isaac:
-  usd: {repo: assets/robots/g1_29dof/usd/g1_29dof_rev_1_0.usd, sha256: cfed730bb043c42708260f25bf3bdf49ac80deed5d5a49384721b8e01059a96e, bundle_dir: true}
+  usd: {repo: assets/robots/g1_29dof/usd/g1_29dof_rev_1_0.usd, sha256: cfed730bb043c42708260f25bf3bdf49ac80deed5d5a49384721b8e01059a96e}
   enabled_self_collisions: true
   solver_position_iteration_count: 8
   solver_velocity_iteration_count: 4

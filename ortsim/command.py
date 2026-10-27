@@ -80,19 +80,6 @@ class VelocityCommand:
         self.value = self.value + step
         self._settled = bool(np.all(np.abs(step) < 1e-9))
 
-    def update_target(self, target, dt: float) -> None:
-        """Advance one control step toward an analog target (remote controller).
-
-        Same ramp as the keys: gaining speed uses the accel rate, shedding it the decel rate.
-        """
-        target = np.clip(np.asarray(target, dtype=np.float64), self._lo, self._hi)
-        delta = target - self.value
-        slowing = (np.abs(target) < np.abs(self.value)) | (target * self.value < 0)
-        rate = np.where(slowing, self._decel, self._accel)
-        step = np.clip(delta, -rate * dt, rate * dt)
-        self.value = self.value + step
-        self._settled = bool(np.all(np.abs(step) < 1e-9))
-
     def maybe_report(self) -> None:
         """Print while ramping (every 0.1) and once when the command settles."""
         moved = np.max(np.abs(self.value - self._printed))

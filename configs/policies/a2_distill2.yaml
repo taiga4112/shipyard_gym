@@ -1,12 +1,8 @@
 name: a2_distill2
-description: A2 distill2 / distill2_20500 (2026-10-01)
-# Shown in the shared-bundle README.
-summary: "階段とロンジの先生をまとめた蒸留ポリシー（前後 LiDAR を溜めた高さマップ 17×11 ＋ 歩行の位相、MLP）"
-summary_en: "Distilled from stair and longitudinal-beam teachers (front/rear LiDAR accumulated height map 17x11 + gait phase, MLP)"
+description: "Distilled from stair and longitudinal-beam teachers (front/rear LiDAR accumulated height map 17x11 + gait phase, MLP)"
 robot: a2
 files:
-  # Converted from checkpoint distill2_20500.pt (md5 37bae36b3c84ab4446682e09be0a5e0a)
-  # with `python -m ortsim.tools.rsl_to_onnx ... --activation elu` (normalizer folded in).
+  # Exported from an RSL-RL checkpoint (ELU activations, observation normalizer folded in).
   onnx: {repo: assets/policies/a2_distill2/policy.onnx}
 sim:
   dt: 0.005
@@ -18,7 +14,7 @@ observation:
 sensors: {}
 command:
   # Training: UniformVelocityCommand vx -0.5..1.0, vy +-0.5, heading-driven yaw rate
-  # (clip +-1.0), resampled every 3-8 s. The tb01 videos ran at vx 0.4.
+  # (clip +-1.0), resampled every 3-8 s.
   trained_ranges:
     lin_vel_x: [-0.5, 1.0]
     lin_vel_y: [-0.5, 0.5]
@@ -166,8 +162,8 @@ deploy_inline:
       history_length: 0
       type: last_action
     height_scan:
-      # robots/a2/lidar_accum.py with the distill2 environment (A2_LIDAR_EMA_UP 0.7,
-      # A2_LIDAR_EMA_DOWN 0.05, A2_LIDAR_STEP_DEG 3.0, A2_LIDAR_REF base, A2_LIDAR_NOISE 1.0).
+      # Accumulated LiDAR height map as in training (EMA up 0.7, EMA down 0.05, 3 deg horizontal
+      # step, distances from the base, pose noise 1.0); see ortsim/perception/lidar_accum.py.
       # 187 heights ((base_z - z) / 5, 0 if unseen) then 187 unseen flags.
       scale: 1.0
       clip: null
@@ -183,8 +179,8 @@ deploy_inline:
       max_distance: 6.0
       r_min: 0.15
       r_max: 6.0
-      # Training had no cap (nothing overhead); a2run's tb01 scenes drop hits more than
-      # 0.6 m above the base so roofs and decks do not enter the map.
+      # Training had no cap (nothing overhead); here hits more than 0.6 m above the base
+      # are dropped so roofs and decks do not enter the map.
       zmax: 0.6
       resolution: 0.1
       phase: 0.25

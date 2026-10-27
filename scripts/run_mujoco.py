@@ -7,9 +7,6 @@ Keys (same layout as the Isaac runner; hold to move, release to slow down and st
 W/S (Up/Down) forward / brake, A/D sideways, Q/E (Left/Right) turn, X stop (clears the
 --command cruise speed), R reset, C camera view, V start/stop recording, M height-map markers, H help.
 Mouse wheel zooms the follow camera. A fall respawns the robot (--reborn start|last|off).
-
---remote PORT lets robot_controller's bridge drive the robot over localhost UDP and
-streams the robot's head camera back (see ortsim/remote.py).
 """
 
 from __future__ import annotations
@@ -54,10 +51,6 @@ def parse_args():
                     help="initial follow-camera view: rear_right, rear_left, behind, side_right, top (C cycles)")
     ap.add_argument("--reborn", choices=MODES, default="start",
                     help="respawn after a fall: at the scene start, where it was ~2 s before falling, or off")
-    ap.add_argument("--remote", type=int, default=None, metavar="PORT",
-                    help="accept velocity commands on udp://127.0.0.1:PORT and stream the head camera")
-    ap.add_argument("--remote-size", default="640x360", help="head-camera stream size WxH")
-    ap.add_argument("--remote-fps", type=float, default=25.0, help="head-camera stream frame rate")
     return ap.parse_args()
 
 
@@ -139,31 +132,6 @@ def main() -> None:
     if args.record is not None:
         start_recording(args.record or None)
 
-    remote = None
-    if args.remote is not None:
-        import cv2
-
-        from ortsim.backends.mujoco_backend import HEAD_CAMERA
-        from ortsim.remote import RemotePort
-
-        remote = RemotePort(args.remote)
-        head_w, head_h = (int(v) for v in args.remote_size.lower().split("x"))
-        head_cam = mujoco.MjvCamera()
-        head_cam.type = mujoco.mjtCamera.mjCAMERA_FIXED
-        head_cam.fixedcamid = model.camera(HEAD_CAMERA).id
-        head_renderer = None if viewer is not None else mujoco.Renderer(model, head_h, head_w)
-        frame_every = max(1, int(round(1.0 / (args.remote_fps * step_dt))))
-
-    def send_head_frame() -> None:
-        if viewer is not None:
-            rgb = viewer.capture(head_w, head_h, cam=head_cam)
-        else:
-            head_renderer.update_scene(data, camera=head_cam)
-            rgb = head_renderer.render()
-        ok, jpg = cv2.imencode(".jpg", rgb[..., ::-1], [cv2.IMWRITE_JPEG_QUALITY, 75])
-        if ok:
-            remote.send_frame(jpg.tobytes())
-
     max_steps = int(args.duration / step_dt) if args.duration else None
     next_tick = time.perf_counter()
     last_state = backend.get_state()
@@ -189,18 +157,7 @@ def main() -> None:
                     elif k == "H":
                         print(HELP, flush=True)
                 held = {k for k in viewer.held if k in KEYMAP}
-            target = None
-            if remote is not None:
-                remote.poll()
-                if remote.reset_requested:
-                    remote.reset_requested = False
-                    respawn(manual=True)
-                    print("[reset] (remote)", flush=True)
-                target = remote.command_target()
-            if target is not None:
-                runner.command.update_target(target, step_dt)
-            else:
-                runner.command.update(held, step_dt)
+            runner.command.update(held, step_dt)
             if viewer is not None:
                 runner.command.maybe_report()
 
@@ -213,11 +170,6 @@ def main() -> None:
                 print(f"[reborn #{reborn.count}] fell at ({p[0]:+.2f}, {p[1]:+.2f}): {reason} -> respawn at {where}",
                       flush=True)
                 respawn(pose)
-
-            if remote is not None:
-                remote.send_state(last_state, runner.command, runner.step_count, step_dt, policy.name, reborn.count)
-                if remote.peer is not None and runner.step_count % frame_every == 0:
-                    send_head_frame()
 
             if viewer is not None:
                 follow.zoom = viewer.zoom
@@ -234,13 +186,6 @@ def main() -> None:
                 else:
                     next_tick = time.perf_counter()
             else:
-                if remote is not None:  # a remote driver needs real time, not as fast as possible
-                    next_tick += step_dt
-                    delay = next_tick - time.perf_counter()
-                    if delay > 0:
-                        time.sleep(delay)
-                    else:
-                        next_tick = time.perf_counter()
                 if writer is not None:
                     set_camera(headless_cam, eye, target)
                     renderer.update_scene(data, camera=headless_cam)
@@ -253,8 +198,6 @@ def main() -> None:
         pass
     finally:
         stop_recording()
-        if remote is not None:
-            remote.close()
         if viewer is not None:
             viewer.close()
 

@@ -1,7 +1,7 @@
 """Body-centred height grid built from LiDAR returns.
 
-NumPy port of ``tsubame_isaac...mdp.lidar_elevation_map.LidarElevationMap`` with the
-training-time noise model left out (a demo wants the clean sensor). Kept identical:
+NumPy reimplementation of the training-time LiDAR elevation map, with the
+noise model left out (a demo wants the clean sensor). Kept identical:
 
 * grid layout: ``idx = ix * num_y + iy``, x forward, centred on the root;
 * value per cell: ``root_z - hit_z - offset``, highest return wins (an ``amin``);

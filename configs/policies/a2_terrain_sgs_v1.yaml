@@ -1,8 +1,5 @@
 name: a2_terrain_sgs_v1
-description: A2-Terrain-SGS-v1 / 2026-10-14_20-12-31
-# Shown in the shared-bundle README.
-summary: "階段・壁・箱・溝などを越える不整地歩行（真上からの高さマップ 735 点 ＋ 歩行の位相、MLP）"
-summary_en: "Rough-terrain walking over stairs, walls, boxes and gaps (top-down height map, 735 cells, + gait phase, MLP)"
+description: "Rough-terrain walking over stairs, walls, boxes and gaps (top-down height map, 735 cells, + gait phase, MLP)"
 robot: a2
 files:
   onnx:
@@ -17,7 +14,7 @@ observation:
   extra_terms: []
 sensors: {}
 command:
-  # From the run's README: flat tiles were trained with direct keyboard-style commands
+  # Per the training notes, flat tiles were trained with direct keyboard-style commands
   # (vx -0.5..1.0, vy +-0.3, yaw +-1.0); spec.json's command block only lists the
   # heading-driven terrain tiles. Measured in MuJoCo on flat ground: vx 1.0 -> 0.94,
   # -0.4 -> -0.35, vy 0.3 -> 0.21, yaw 0.8 -> 0.83.

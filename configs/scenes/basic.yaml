@@ -1,15 +1,14 @@
 name: basic
-description: 基本的な移動・地形踏破の検証環境
+description: Basic locomotion and terrain traversal
 notes:
-- 名称と寸法はORTテストベッド一覧に合わせています
-- '板状段差: 幅 4 cm の板を格子状に並べたもの。逆 L 字段差: 板の上端に幅 20 cm の板が乗ったもの'
-- 'マンホール: x = 2 m の位置でフィールドを仕切る高さ 2 m の壁にある開口（y ≈ 8 m）。地上高＝開口の下端の高さ、奥行き＝壁の厚さ'
-- '`0_x`〜`3_x`: 12 m 四方のフィールド。スタート側は高さ 2 m の L 字の壁で仕切られた幅 3 m の通路（x = −1〜2 m、y < 3
-  m）'
-- '`5_x`・`6_1`: 幅 4 m のレーン（x = −2〜2 m）。右側（x ≈ 2 m）に高さ 2 m の壁'
-- 多くのシーンに、厚みのない板の看板がある（ゴールの目印と思われる。当たり判定は Isaac のみ）
-- スタート位置は USD に含まれていないため、既定は (0, 0) から +y 向き（シーンごとに `spawn` で変更できます）
-- '一覧にあって USD が無いもの: `1_3_1`（工字段差 60 cm）、R 付段差、`4_1`（障害物）'
+- 'Plate steps: 4 cm wide plates arranged in a grid. Inverted-L steps: a 20 cm wide plate on top of each plate'
+- 'Manholes: an opening (y ≈ 8 m) in a 2 m tall wall that divides the field at x = 2 m. Sill is the height
+  of the opening''s lower edge above the ground; depth is the wall thickness'
+- '`0_x` to `3_x`: a 12 m square field. The start side is a 3 m wide corridor (x = −1 to 2 m, y < 3 m) enclosed
+  by a 2 m tall L-shaped wall'
+- '`5_x` and `6_1`: a 4 m wide lane (x = −2 to 2 m) with a 2 m tall wall on the right (x ≈ 2 m)'
+- Many scenes have a zero-thickness signboard plate (likely a goal marker; it collides in Isaac Sim only)
+- The USD files carry no start pose, so the default spawn is (0, 0) facing +y (override per scene with `spawn`)
 defaults:
   spawn:
     pos:
@@ -21,281 +20,219 @@ defaults:
   friction: 1.0
 scenes:
   '0_1':
-    description: 平面
-    description_en: Flat ground
+    description: Flat ground
     usd:
       repo: assets/scenes/basic/test_0_1.usd
       sha256: d521f5a5ef053791b4de15f7806a900cd91d875b0988af2d887d595fa15b2d63
   '1_1_1':
-    description: 平面、板状段差（10 cm）、段差間隔1 m
-    description_en: Flat, plate steps (10 cm), 1 m apart
+    description: Flat, plate steps (10 cm), 1 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_1.usd
       sha256: bc8499470545c9da1165f5b8727a66000e3ede30e2d592f894f0d9664f405416
   '1_1_2':
-    description: 平面、板状段差（20 cm）、段差間隔1 m
-    description_en: Flat, plate steps (20 cm), 1 m apart
+    description: Flat, plate steps (20 cm), 1 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_2.usd
       sha256: 5370e95323c6dfd39cc0a26e86b69d4483e3987dd599a587c6715e3b04f95b32
-  '1_1_3':
-    description: 1_1_3_1 と同一ファイル（テストベッド一覧には無い）
-    description_en: Same file as 1_1_3_1 (not in the testbed list)
-    usd:
-      repo: assets/scenes/basic/test_1_1_3.usd
-      sha256: 773b9f773a6e259ba45ae1a4a850c07bb9c163a7b74f054875c53224e59708f3
   '1_1_3_1':
-    description: 平面、板状段差（25 cm）、段差間隔2 m
-    description_en: Flat, plate steps (25 cm), 2 m apart
+    description: Flat, plate steps (25 cm), 2 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_3_1.usd
       sha256: 773b9f773a6e259ba45ae1a4a850c07bb9c163a7b74f054875c53224e59708f3
   '1_1_3_2':
-    description: 平面、板状段差（25 cm）、段差間隔1 m
-    description_en: Flat, plate steps (25 cm), 1 m apart
+    description: Flat, plate steps (25 cm), 1 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_3_2.usd
       sha256: 7d79d8c8c8b03e2d9a156430cb7f9946a9f90da423bc71cf6184f4194e34ede2
   '1_1_3_3':
-    description: 平面、板状段差（25 cm）、段差間隔0.6 m
-    description_en: Flat, plate steps (25 cm), 0.6 m apart
+    description: Flat, plate steps (25 cm), 0.6 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_3_3.usd
       sha256: 9b71635dd6b74bc64f752413077fcb2176d3af0baf788e279fe3b1e4819d4cb6
   '1_1_4':
-    description: 平面、板状段差（30 cm）、段差間隔1 m
-    description_en: Flat, plate steps (30 cm), 1 m apart
+    description: Flat, plate steps (30 cm), 1 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_4.usd
       sha256: d76c307ba8e10a350be4ee40c2f8c5dba17e8c246c9c6041ac977fabe9ce69e8
-  '1_1_5':
-    description: 1_1_5_2 と同一ファイル（テストベッド一覧には無い）
-    description_en: Same file as 1_1_5_2 (not in the testbed list)
-    usd:
-      repo: assets/scenes/basic/test_1_1_5.usd
-      sha256: dadc08ce6b1478da2e129a05b648a458f16a9ed25ed6f22223aed13cb6b74a7e
   '1_1_5_1':
-    description: 平面、板状段差（40 cm）、段差間隔2 m
-    description_en: Flat, plate steps (40 cm), 2 m apart
+    description: Flat, plate steps (40 cm), 2 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_5_1.usd
       sha256: 301574241738a19f2755f842dea979d9a76f1630f109a2e0ab97923f04970159
   '1_1_5_2':
-    description: 平面、板状段差（40 cm）、段差間隔1 m
-    description_en: Flat, plate steps (40 cm), 1 m apart
+    description: Flat, plate steps (40 cm), 1 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_5_2.usd
       sha256: dadc08ce6b1478da2e129a05b648a458f16a9ed25ed6f22223aed13cb6b74a7e
   '1_1_5_3':
-    description: 平面、板状段差（40 cm）、段差間隔0.6 m
-    description_en: Flat, plate steps (40 cm), 0.6 m apart
+    description: Flat, plate steps (40 cm), 0.6 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_5_3.usd
       sha256: d2fc3f1fbf9dc1cb0763b21dc76d1a5167d3f0aef8a0ac2872a3f446b9d48737
   '1_1_6':
-    description: 平面、板状段差（60 cm）、進行方向 2 m・横方向 1 m 間隔（テストベッド一覧には無い）
-    description_en: Flat, plate steps (60 cm), 2 m along the course and 1 m across
-      (not in the testbed list)
+    description: Flat, plate steps (60 cm), 2 m along the course and 1 m across
     usd:
       repo: assets/scenes/basic/test_1_1_6.usd
       sha256: 93f4fb8012983fbd5557bd6e1ac1b4c62f7d5333a4a44ebebdcf7057e43ef6e5
   '1_1_6_1':
-    description: 平面、板状段差（60 cm）、段差間隔2 m
-    description_en: Flat, plate steps (60 cm), 2 m apart
+    description: Flat, plate steps (60 cm), 2 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_6_1.usd
       sha256: 59336e4d047ab5dd4be4c6365f1200a39b359cd0f066f8d792c96d229c8fee7b
   '1_1_6_2':
-    description: 平面、板状段差（60 cm）、段差間隔1 m
-    description_en: Flat, plate steps (60 cm), 1 m apart
+    description: Flat, plate steps (60 cm), 1 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_6_2.usd
       sha256: 35150b956dcf17715f9975068fcfac2c0367b121d7aa4e51e72ab52bc916fdee
   '1_1_6_3':
-    description: 平面、板状段差（60 cm）、段差間隔0.6 m
-    description_en: Flat, plate steps (60 cm), 0.6 m apart
+    description: Flat, plate steps (60 cm), 0.6 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_6_3.usd
       sha256: 9f47a7230c8a2477401e597c8cd40bd90e96a703669af469754a1f45605a5d1d
   '1_1_7':
-    description: 平面、板状段差（35 cm）、段差間隔1 m
-    description_en: Flat, plate steps (35 cm), 1 m apart
+    description: Flat, plate steps (35 cm), 1 m apart
     usd:
       repo: assets/scenes/basic/test_1_1_7.usd
       sha256: 43ad9ea57053d69ea64c228ecdca273b0da14f036e80718c5aae103fcc9f1f4e
-  '1_2_1':
-    description: 1_2_1_2 と同一ファイル（テストベッド一覧には無い）
-    description_en: Same file as 1_2_1_2 (not in the testbed list)
-    usd:
-      repo: assets/scenes/basic/test_1_2_1.usd
-      sha256: ac4cb2f57bc0f76ab7bb3deacb951b5e527c4075547a579906373d19e1a13aa5
   '1_2_1_1':
-    description: 平面、逆L字段差（20 cm）、段差間隔2 m
-    description_en: Flat, inverted-L steps (20 cm), 2 m apart
+    description: Flat, inverted-L steps (20 cm), 2 m apart
     usd:
       repo: assets/scenes/basic/test_1_2_1_1.usd
       sha256: fb2948daca71a77b136e142767ed3d773bcd8c24b92a5dc3c65f969591e7355c
   '1_2_1_2':
-    description: 平面、逆L字段差（20 cm）、段差間隔1 m
-    description_en: Flat, inverted-L steps (20 cm), 1 m apart
+    description: Flat, inverted-L steps (20 cm), 1 m apart
     usd:
       repo: assets/scenes/basic/test_1_2_1_2.usd
       sha256: ac4cb2f57bc0f76ab7bb3deacb951b5e527c4075547a579906373d19e1a13aa5
   '1_2_1_3':
-    description: 平面、逆L字段差（20 cm）、段差間隔0.6 m
-    description_en: Flat, inverted-L steps (20 cm), 0.6 m apart
+    description: Flat, inverted-L steps (20 cm), 0.6 m apart
     usd:
       repo: assets/scenes/basic/test_1_2_1_3.usd
       sha256: 6c9c1722021c09b4554c4874d6639d6bb1e4d1fbbf61eeb02b7f23cce50c4f6c
   '1_2_2':
-    description: 平面、逆L字段差（40 cm）
-    description_en: Flat, inverted-L steps (40 cm)
+    description: Flat, inverted-L steps (40 cm)
     usd:
       repo: assets/scenes/basic/test_1_2_2.usd
       sha256: ede65666cd60474cbcb9a0ac1930e6830ae3c6bc8509da39881269305369ba5e
   '1_2_3':
-    description: 平面、逆L字段差（60 cm）
-    description_en: Flat, inverted-L steps (60 cm)
+    description: Flat, inverted-L steps (60 cm)
     usd:
       repo: assets/scenes/basic/test_1_2_3.usd
       sha256: 188faa0e3bd61d5854ffa6ec22fab63081aab12162709b730fd912d1be9ed56e
   '1_2_4':
-    description: 平面、逆L字段差（30 cm）
-    description_en: Flat, inverted-L steps (30 cm)
+    description: Flat, inverted-L steps (30 cm)
     usd:
       repo: assets/scenes/basic/test_1_2_4.usd
       sha256: 5141c5a8d84c799c2a3c86cf5fa7ecc79ed4f0db3b93cf5fdb1cc64dab42357a
   '1_2_5':
-    description: 平面、逆L字段差（35 cm）
-    description_en: Flat, inverted-L steps (35 cm)
+    description: Flat, inverted-L steps (35 cm)
     usd:
       repo: assets/scenes/basic/test_1_2_5.usd
       sha256: 232c8759f1067e04c4d720b38b0d54ec27ac40ae7be6685ec76e0db15a9cfa08
   '1_2_6':
-    description: 平面、逆L字段差（25 cm）
-    description_en: Flat, inverted-L steps (25 cm)
+    description: Flat, inverted-L steps (25 cm)
     usd:
       repo: assets/scenes/basic/test_1_2_6.usd
       sha256: 6b262f7d984869d7cda0e67bce3dd03276953225e9d393d689163ce907fcc4aa
   '1_4_1':
-    description: 平面、傾斜状段差（小）
-    description_en: Flat, tilted steps (small)
+    description: Flat, tilted steps (small)
     usd:
       repo: assets/scenes/basic/test_1_4_1.usd
       sha256: 56786c8feac57294645b7d882cdd451821e1d75fd969750f1f7af716483aa3df
   '1_4_2':
-    description: 平面、傾斜状段差（中）
-    description_en: Flat, tilted steps (medium)
+    description: Flat, tilted steps (medium)
     usd:
       repo: assets/scenes/basic/test_1_4_2.usd
       sha256: bab2dbf14c27dafdc896d81e1b3c7c40a6e93757e401ecead591b5baec6c536b
   '1_4_3':
-    description: 平面、傾斜状段差（大）
-    description_en: Flat, tilted steps (large)
+    description: Flat, tilted steps (large)
     usd:
       repo: assets/scenes/basic/test_1_4_3.usd
       sha256: ddb8843e9b4dd97371222419e9473215e4394f9acae6cf169519ce8b8cd8063f
   '2_1':
-    description: 平面、マンホール（地上高：10 cm、幅：80 cm、奥行き：1 cm）
-    description_en: Flat, manhole (sill 10 cm, width 80 cm, depth 1 cm)
+    description: Flat, manhole (sill 10 cm, width 80 cm, depth 1 cm)
     usd:
       repo: assets/scenes/basic/test_2_1.usd
       sha256: 6b23bd2c0e1ff6f78d48b8ab299156744585ffa79a17716f529421e8c701f74d
   '2_2':
-    description: 平面、マンホール（地上高：30 cm、幅：80 cm、奥行き：1 cm）
-    description_en: Flat, manhole (sill 30 cm, width 80 cm, depth 1 cm)
+    description: Flat, manhole (sill 30 cm, width 80 cm, depth 1 cm)
     usd:
       repo: assets/scenes/basic/test_2_2.usd
       sha256: 4c710700781ca30f832a1da11ce429b4aca13b86cbdf3d526fa36bdb9dc28b0f
   '2_3':
-    description: 平面、マンホール（地上高：60 cm、幅：80 cm、奥行き：1 cm）
-    description_en: Flat, manhole (sill 60 cm, width 80 cm, depth 1 cm)
+    description: Flat, manhole (sill 60 cm, width 80 cm, depth 1 cm)
     usd:
       repo: assets/scenes/basic/test_2_3.usd
       sha256: bae2a4ae06aa3bfe729ccd92bf97409c4696c48df62d4393ea76ca6d126008fd
   '2_4':
-    description: 平面、マンホール（地上高：10 cm、幅：60 cm、奥行き：1 cm）
-    description_en: Flat, manhole (sill 10 cm, width 60 cm, depth 1 cm)
+    description: Flat, manhole (sill 10 cm, width 60 cm, depth 1 cm)
     usd:
       repo: assets/scenes/basic/test_2_4.usd
       sha256: c53e51e819a2e98fff3da5d369663d0b669f447d14f1a91d68727e979953105a
   '2_5':
-    description: 平面、マンホール（地上高：60 cm、幅：60 cm、奥行き：1 cm）
-    description_en: Flat, manhole (sill 60 cm, width 60 cm, depth 1 cm)
+    description: Flat, manhole (sill 60 cm, width 60 cm, depth 1 cm)
     usd:
       repo: assets/scenes/basic/test_2_5.usd
       sha256: a44943a4e674b33f55e1a137822a6dfbfa100ea883fbbc56fde41d26305c1938
   '2_6':
-    description: 平面、マンホール（地上高：60 cm、幅：60 cm、奥行き：10 cm）
-    description_en: Flat, manhole (sill 60 cm, width 60 cm, depth 10 cm)
+    description: Flat, manhole (sill 60 cm, width 60 cm, depth 10 cm)
     usd:
       repo: assets/scenes/basic/test_2_6.usd
       sha256: 047495d67c7c4b617b00c5ccf7290f1977a1afa375a8d886f9d33bf7653c142a
   '2_7':
-    description: 平面、マンホール（地上高：60 cm、幅：60 cm、奥行き：20 cm）
-    description_en: Flat, manhole (sill 60 cm, width 60 cm, depth 20 cm)
+    description: Flat, manhole (sill 60 cm, width 60 cm, depth 20 cm)
     usd:
       repo: assets/scenes/basic/test_2_7.usd
       sha256: d3877cbc74e5f1375d1858d73b8d85aad538a1fd9d77decead4daac4bc40bcce
   '2_8':
-    description: 平面、マンホール（地上高：10 cm、幅：60 cm、奥行き：20 cm）
-    description_en: Flat, manhole (sill 10 cm, width 60 cm, depth 20 cm)
+    description: Flat, manhole (sill 10 cm, width 60 cm, depth 20 cm)
     usd:
       repo: assets/scenes/basic/test_2_8.usd
       sha256: a796e428074af4ab6136381227f1e0dd9b1c27252a33b99242b4ca67f5fd0711
   '2_9':
-    description: 平面、マンホール（地上高：25 cm、幅：60 cm、奥行き：1 cm）
-    description_en: Flat, manhole (sill 25 cm, width 60 cm, depth 1 cm)
+    description: Flat, manhole (sill 25 cm, width 60 cm, depth 1 cm)
     usd:
       repo: assets/scenes/basic/test_2_9.usd
       sha256: 4601594c8829965a4af3d0cf4974966c8ad306ca366c27d4b741f3f8798eee95
   '3_1':
-    description: 平面、マンホール（地上高：60 cm、幅：60 cm、奥行き：10 cm）出入口直下の床に逆L字段差
-    description_en: Flat, manhole (sill 60 cm, width 60 cm, depth 10 cm) with an inverted-L
+    description: Flat, manhole (sill 60 cm, width 60 cm, depth 10 cm) with an inverted-L
       step on the floor right below the opening
     usd:
       repo: assets/scenes/basic/test_3_1.usd
       sha256: dcec034dbd6f60eaaf414bbd78fde2ffba8efc2bf591533747882060ff4a7827
   '3_2':
-    description: 平面、マンホール（地上高：60 cm、幅：60 cm、奥行き：10 cm）に隣接する板
-    description_en: Flat, manhole (sill 60 cm, width 60 cm, depth 10 cm) with an adjacent
+    description: Flat, manhole (sill 60 cm, width 60 cm, depth 10 cm) with an adjacent
       plate
     usd:
       repo: assets/scenes/basic/test_3_2.usd
       sha256: 5ab25c75b240120e7f7b017d85b3ca9a1761cb9159e319c68dab47f4ee9940ad
   '5_1':
-    description: 床面形状：階段（奥行き20 cm、高さ20 cm、蹴込み板あり）
-    description_en: Stairs (20 cm tread, 20 cm rise, with risers)
+    description: Stairs (20 cm tread, 20 cm rise, with risers)
     usd:
       repo: assets/scenes/basic/test_5_1.usd
       sha256: 58eac279e612e04eca4f301b73de22ca469a7ef80dccfde70ca69b8d084a4f42
   '5_2':
-    description: 床面形状：階段（奥行き20 cm、高さ20 cm、蹴込み板なし）
-    description_en: Stairs (20 cm tread, 20 cm rise, without risers)
+    description: Stairs (20 cm tread, 20 cm rise, without risers)
     usd:
       repo: assets/scenes/basic/test_5_2.usd
       sha256: 84a196078b2a57487d3386e4efaad925f0ee264e745f71cbd71d82d957b72892
   '5_3':
-    description: 坂（5deg）
-    description_en: Slope (5 deg)
+    description: Slope (5 deg)
     usd:
       repo: assets/scenes/basic/test_5_3.usd
       sha256: d47f19a58d42a8e031740ef4856865386f4a9ed3201645043d12062748cdaa2a
   '5_4':
-    description: 坂（15deg）
-    description_en: Slope (15 deg)
+    description: Slope (15 deg)
     usd:
       repo: assets/scenes/basic/test_5_4.usd
       sha256: 4fae4761b75a97faebf68138c2782ad962e077174ce0075445870845a3c197d1
   '5_5':
-    description: 勾配変化
-    description_en: Changing gradient
+    description: Changing gradient
     usd:
       repo: assets/scenes/basic/test_5_5.usd
       sha256: 12c0c3e02f63fe6adb5308e769c126c20464bb5ea0e5d1fe6bad44a6f5735258
   '6_1':
-    description: グレーチング
-    description_en: Grating
+    description: Grating
     usd:
       repo: assets/scenes/basic/test_6_1.usd
       sha256: 7df69a50b12759d2b6976760b1a5ab2aa1fa64d7ca2415fe0836a4a0f0b3270c

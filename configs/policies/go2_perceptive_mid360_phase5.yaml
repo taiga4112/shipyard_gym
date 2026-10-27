@@ -1,8 +1,5 @@
 name: go2_perceptive_mid360_phase5
-description: Go2-Perceptive-Mid360-Phase5 / 2026-09-28_19-15-01
-# Shown in the shared-bundle README.
-summary: "壁や段差を越える不整地歩行（MID-360 LiDAR の高さマップ ＋ GRU）"
-summary_en: "Rough-terrain walking over walls and steps (MID-360 LiDAR height map + GRU)"
+description: "Rough-terrain walking over walls and steps (MID-360 LiDAR height map + GRU)"
 robot: go2
 files:
   onnx:

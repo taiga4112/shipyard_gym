@@ -5,7 +5,6 @@
 # from each policy (spec.json).
 
 name: a2
-display_name: Unitree A2   # shown in the shared-bundle README
 
 base_body: base_link
 
@@ -42,7 +41,7 @@ motors:
     armature: 0.03
 
 isaac:
-  usd: {repo: assets/robots/a2/usd/a2.usd, sha256: b4574da446352f042098737b83f100bba233290fa411539b92c95b5eb0b9f65f, bundle_dir: true}
+  usd: {repo: assets/robots/a2/usd/a2.usd, sha256: b4574da446352f042098737b83f100bba233290fa411539b92c95b5eb0b9f65f}
   enabled_self_collisions: true
   solver_position_iteration_count: 4
   solver_velocity_iteration_count: 0
@@ -53,5 +52,3 @@ mujoco:
 camera:
   follow_offset: [-2.3, -1.6, 1.1]
   target_offset: [0.0, 0.0, -0.05]
-  # Head camera streamed to the remote controller (--remote): just ahead of the front bumper.
-  head: {pos: [0.40, 0.0, 0.06], pitch_deg: 10.0, fovy: 70.0}
