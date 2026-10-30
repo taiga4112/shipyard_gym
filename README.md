@@ -193,3 +193,15 @@ Each policy directory, `assets/scenes/basic/`, and `assets/sensors/` also has a 
 - Commands outside a policy's training range can lead to poor locomotion. The console reports a warning when commands exceed that range.
 - Isaac Sim and MuJoCo use different contact models, so behavior can differ even with the same policy and scene.
 - Simulation results do not establish real-world robot performance. Hardware validation is needed before drawing conclusions about operation in a shipyard.
+
+## License
+
+The code, configurations, the Open Reach Tech policies (`go2_perceptive_mid360_phase5`, `a2_terrain_sgs_v1`, `a2_distill2`), and the scenes in `assets/scenes/` are released under the [MIT License](LICENSE), Copyright (c) 2026 Taiga Mitsuyuki and Open Reach Tech Inc.
+
+Third-party assets keep their own licenses; see the `LICENSE` and `SOURCE.md` files in each directory:
+
+| Path | Source | License |
+|---|---|---|
+| `assets/robots/{go2,a2,g1_29dof}/` | Unitree Robotics (unitree_ros, unitree_mujoco) | BSD-3-Clause |
+| `assets/policies/unitree_g1_29dof_velocity_v0/` | Unitree Robotics (unitree_rl_lab) | Apache-2.0 |
+| `assets/sensors/mid360.npy` | Livox (livox_laser_simulation) | MIT |
