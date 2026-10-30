@@ -1,5 +1,9 @@
 # Shipyard Gym
 
+![Shipyard Gym — Robotics for shipyard environments, with a quadruped robot welding and a humanoid robot on a shipyard walkway](docs/media/shipyard-gym-social-preview-root-welding.jpg)
+
+*Concept illustration of robotics in shipyard environments.*
+
 Shipyard Gym is a simulation workspace for exploring general-purpose robot behavior in shipyard environments. It provides a place to try robot capabilities against the terrain and structures they may encounter in shipbuilding, inspect how they behave, and identify what needs to improve.
 
 ## Demo
