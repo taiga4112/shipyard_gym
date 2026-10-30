@@ -164,6 +164,7 @@ Plate steps are narrow vertical plates arranged in a grid. Inverted-L steps add 
 | `basic/5_4` | Slope (15 deg) |
 | `basic/5_5` | Changing gradient |
 | `basic/6_1` | Grating |
+| `bridge_scanned/ynu` | Environment created from a scan of the structural engineering laboratory at Yokohama National University (YNU), as part of the BRIDGE project |
 | `builtin/flat` | Flat ground |
 
 <!-- scenes:end -->
