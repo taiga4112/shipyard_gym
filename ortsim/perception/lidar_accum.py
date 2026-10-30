@@ -1,7 +1,7 @@
 """Height map accumulated from two body-fixed LiDARs on a world-aligned 0.1 m grid.
 
-NumPy port of the A2 distill2 ``lidar_accum.lidar_accum_scan`` (unitree_rl_lab
-tasks/locomotion/robots/a2/lidar_accum.py, as trained on 2026-10-01). Kept identical:
+NumPy reimplementation of the height map the A2 distill2 policy was trained with. Kept
+identical:
 
 * rays: Isaac Lab ``LidarPatternCfg`` (vertical ``linspace(v0, v1, channels)``, 360 deg
   horizontal without the duplicate end), rotated by the mount quaternion then by the
@@ -11,7 +11,7 @@ tasks/locomotion/robots/a2/lidar_accum.py, as trained on 2026-10-01). Kept ident
 * hits are written to world cells ``floor(v / res + phase)``, highest hit per cell per
   step, blended with an asymmetric EMA (``ema_up`` when rising, ``ema_down`` when
   falling, a fresh cell takes the new value); the grid follows the robot in whole cells
-  and forgets what leaves its ``+-half`` square (``A2_LIDAR_FOLLOW=1``, as in a2run);
+  and forgets what leaves its ``+-half`` square;
 * output: a yaw-aligned 17 x 11 node window (x inner), value ``(base_z - z - offset) * scale``,
   0 where unseen, followed by the 187 unseen flags.
 

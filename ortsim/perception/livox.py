@@ -1,6 +1,6 @@
 """Livox MID-360 ray pattern, consumed as a rolling window over the recorded scan sequence.
 
-Port of ``tsubame_isaac.sensors.RollingLivoxSensor``: each sensor update takes the next
+Each sensor update takes the next
 ``samples`` rows of the recorded (theta, phi) sequence, casting every ``downsample``-th
 one, so the rosette sweeps the way the hardware does. Rays are rigidly attached to the
 mount (``ray_alignment="base"``).

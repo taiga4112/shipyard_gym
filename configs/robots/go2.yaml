@@ -2,11 +2,10 @@
 #
 # Isaac Sim spawns the USD the policies were trained with; MuJoCo builds the robot from
 # the URDF that USD was made from (same masses), see assets/robots/go2/SOURCE.md.
-# Motor values mirror the training-time UnitreeActuatorCfg_Go2HV (GO2HV in params/env.yaml);
+# Motor values mirror the training-time UnitreeActuatorCfg_Go2HV;
 # PD gains come from each policy's deploy.yaml.
 
 name: go2
-display_name: Unitree Go2   # shown in the shared-bundle README
 urdf: {repo: assets/robots/go2/go2_description.urdf}
 
 base_body: base
@@ -59,8 +58,8 @@ motors:
     friction: 0.0
 
 isaac:
-  # The training asset (UsdFileCfg); bundle_dir ships its configuration/ sublayers too.
-  usd: {repo: assets/robots/go2/usd/go2.usd, sha256: fd3c8c23c97cea3208fae1ab5eeacba4ffa616fe5f1397be6c7edf4feb93f180, bundle_dir: true}
+  # The training asset (UsdFileCfg); it loads the configuration/ sublayers next to it.
+  usd: {repo: assets/robots/go2/usd/go2.usd, sha256: fd3c8c23c97cea3208fae1ab5eeacba4ffa616fe5f1397be6c7edf4feb93f180}
   enabled_self_collisions: true
   solver_position_iteration_count: 8
   solver_velocity_iteration_count: 4
@@ -71,5 +70,3 @@ mujoco:
 camera:
   follow_offset: [-1.7, -1.2, 0.8]
   target_offset: [0.0, 0.0, -0.05]
-  # Head camera streamed to the remote controller (--remote): the Go2 front camera.
-  head: {pos: [0.32, 0.0, 0.04], pitch_deg: 5.0, fovy: 70.0}

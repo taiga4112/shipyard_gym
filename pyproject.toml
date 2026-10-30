@@ -5,6 +5,10 @@
 [project]
 name = "ortsim"
 version = "0.2.0"
+description = "Shipyard robot simulation workspace: run pretrained locomotion policies in Isaac Sim or MuJoCo"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Taiga Mitsuyuki" }, { name = "Open Reach Tech Inc." }]
 requires-python = ">=3.10,<3.13"
 dependencies = [
     "mujoco>=3.2",

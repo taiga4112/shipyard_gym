@@ -1,8 +1,6 @@
 name: unitree_g1_29dof_velocity_v0
-description: unitree_rl_lab deploy/robots/g1_29dof/config/policy/velocity/v0
-# Shown in the shared-bundle README.
-summary: "平地での歩行（Unitree 公式の学習済み policy。固有感覚のみ、観測履歴 5 ステップ）"
-summary_en: "Walking on flat ground (Unitree's pretrained policy; proprioception only, 5-step history)"
+description: "Walking on flat ground (Unitree's pretrained policy; proprioception only, 5-step history)"
+# From unitree_rl_lab: deploy/robots/g1_29dof/config/policy/velocity/v0
 robot: g1_29dof
 files:
   # Unitree's pretrained policy shipped with unitree_rl_lab.

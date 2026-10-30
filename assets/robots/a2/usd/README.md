@@ -1,36 +1,38 @@
-# A2 の機体の USD（A2-Terrain-SGS-v1 の学習と同じ物）
+# A2 robot USD (the asset A2-Terrain-SGS-v1 was trained with)
 
-Isaac Sim / Isaac Lab で A2 を建てるための機体の USD です。方策 A2-Terrain-SGS-v1 の学習・評価は、この USD で行いました。
-このパッケージでは `assets/robots/a2/usd/` に配置しています。
+The USD for spawning the A2 in Isaac Sim / Isaac Lab. The A2-Terrain-SGS-v1 policy was trained and evaluated with this USD.
+In this repository it lives in `assets/robots/a2/usd/`.
 
-## 入っている物
+## Contents
 
 ```
-a2.usd                         入口（中身は configuration/ の 4 つを読む。4 つと同じ所に置いたまま使う）
+a2.usd                         entry file (loads the four files in configuration/; keep them alongside it)
   md5 b4d456bc1dc121e37646283285ed64b9
-configuration/a2_base.usd      形（見た目と当たり判定）  md5 c0fc759a787f79f0391cb21c0281ad36
-configuration/a2_physics.usd   質量・関節                md5 1750e987efbedc8cae66c66983b13fde
-configuration/a2_robot.usd                               md5 135527794cfad60506c9bbc3e640f98a
-configuration/a2_sensor.usd                              md5 113fd5fe59144c289ed53df7a1b76f67
+configuration/a2_base.usd      geometry (visuals and collisions)  md5 c0fc759a787f79f0391cb21c0281ad36
+configuration/a2_physics.usd   mass and joints                    md5 1750e987efbedc8cae66c66983b13fde
+configuration/a2_robot.usd                                        md5 135527794cfad60506c9bbc3e640f98a
+configuration/a2_sensor.usd                                       md5 113fd5fe59144c289ed53df7a1b76f67
 ```
 
-## 作り方
+## How it was made
 
-1. 元の URDF: unitree_ros の `robots/a2_description/urdf/a2.urdf`（md5 730b8f4c9a835221ea4e842b1e0ebb93）
-2. そこから **カメラと LiDAR のリンク（camera_link・front_lidar_link・rear_lidar_link）と、それをつなぐ関節、world のリンク** を外して
-   `a2_nosensors.urdf`（md5 4d57fb7a494304ceb48d197bd8c121e5）を作った。
-   理由: これらのリンクには慣性が書かれておらず、PhysX が 1 つにつき 1 kg を割り当てて機体が 43 kg になるため（外すと 40.071 kg。リンク 17・関節 12）
-3. `a2_nosensors.urdf` を Isaac Lab の URDF 変換（UrdfConverter。2026-09-16）で USD にした。主な設定:
+1. Source URDF: unitree_ros `robots/a2_description/urdf/a2.urdf` (md5 730b8f4c9a835221ea4e842b1e0ebb93).
+2. Removed **the camera and LiDAR links (camera_link, front_lidar_link, rear_lidar_link), the joints attaching them,
+   and the world link** to make `a2_nosensors.urdf` (md5 4d57fb7a494304ceb48d197bd8c121e5).
+   Reason: these links have no inertia, so PhysX assigns each one 1 kg and the robot weighs 43 kg
+   (40.071 kg without them; 17 links, 12 joints).
+3. Converted `a2_nosensors.urdf` to USD with Isaac Lab's URDF converter (UrdfConverter, 2026-09-16). Main settings:
    fix_base false / make_instanceable true / merge_fixed_joints false / self_collision false / collider_type convex_hull /
-   joint_drive force・position（stiffness 40・damping 2。**使う側で上書きする**。学習も deploy の台本も、関節の駆動は使わずトルクを入れる）
-4. 当たり判定は URDF 由来の基本形状（箱 29・円柱 4・球 4）
+   joint_drive force, position (stiffness 40, damping 2; **overridden by the user**: both training and deployment
+   apply torques directly instead of using the joint drives).
+4. Collisions are the URDF's primitive shapes (29 boxes, 4 cylinders, 4 spheres).
 
-LiDAR の取り付け（外す前の URDF の値。使う側で光線を付ける）:
+LiDAR mounts (values from the URDF before the links were removed; the user attaches the rays):
 ```
-front_lidar_joint  base_link から xyz (0.33767, 0, 0.08134) rpy (1.5708, 0, 1.5708)
-rear_lidar_joint   front_lidar_link から xyz (0, 0.005997, -0.617644) rpy (0, 3.14159, 0)
+front_lidar_joint  from base_link         xyz (0.33767, 0, 0.08134)    rpy (1.5708, 0, 1.5708)
+rear_lidar_joint   from front_lidar_link  xyz (0, 0.005997, -0.617644)  rpy (0, 3.14159, 0)
 ```
 
-## 使い方
+## Usage
 
-`configs/robots/a2.yaml` の `isaac.usd` から参照します。関節の PD・armature・力の上限は、policy 設定の値を使います。
+Referenced from `isaac.usd` in `configs/robots/a2.yaml`. Joint PD gains, armature, and effort limits come from the policy config.

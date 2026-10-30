@@ -82,9 +82,8 @@ class GlfwViewer:
     def set_camera(self, eye: np.ndarray, target: np.ndarray) -> None:
         set_camera(self.cam, eye, target)
 
-    def _draw(self, viewport, extra_geoms, lines, cam=None) -> None:
-        cam = self.cam if cam is None else cam
-        mujoco.mjv_updateScene(self.model, self.data, self.option, None, cam, mujoco.mjtCatBit.mjCAT_ALL, self.scene)
+    def _draw(self, viewport, extra_geoms, lines) -> None:
+        mujoco.mjv_updateScene(self.model, self.data, self.option, None, self.cam, mujoco.mjtCatBit.mjCAT_ALL, self.scene)
         if extra_geoms is not None:
             extra_geoms(self.scene)
         mujoco.mjr_render(viewport, self.scene, self.context)
@@ -98,13 +97,13 @@ class GlfwViewer:
         self._draw(mujoco.MjrRect(0, 0, w, h), extra_geoms, lines)
         glfw.swap_buffers(self.window)
 
-    def capture(self, width: int, height: int, extra_geoms=None, cam=None) -> np.ndarray:
-        """Render the current view (or ``cam``) offscreen at (width, height); returns RGB uint8."""
+    def capture(self, width: int, height: int, extra_geoms=None) -> np.ndarray:
+        """Render the current view offscreen at (width, height); returns RGB uint8."""
         width = min(width, self.model.vis.global_.offwidth)
         height = min(height, self.model.vis.global_.offheight)
         mujoco.mjr_setBuffer(mujoco.mjtFramebuffer.mjFB_OFFSCREEN, self.context)
         rect = mujoco.MjrRect(0, 0, width, height)
-        self._draw(rect, extra_geoms, None, cam)
+        self._draw(rect, extra_geoms, None)
         rgb = np.empty((height, width, 3), dtype=np.uint8)
         mujoco.mjr_readPixels(rgb, None, rect, self.context)
         mujoco.mjr_setBuffer(mujoco.mjtFramebuffer.mjFB_WINDOW, self.context)

@@ -205,34 +205,11 @@ def _add_scene(spec: mujoco.MjSpec, scene: SceneSpec) -> None:
                        group=4, friction=[scene.friction, 0.005, 0.0001])
 
 
-HEAD_CAMERA = "head_camera"
-
-
-def _add_head_camera(spec: mujoco.MjSpec, policy: PolicySpec) -> None:
-    """A forward-looking camera fixed to the base (``camera.head`` in the robot config).
-
-    ``pos`` is in the base frame (x forward, z up), ``pitch_deg`` tilts it down, ``fovy``
-    is the vertical field of view. This is what the remote controller streams.
-    """
-    head = policy.robot.camera.get("head") or {}
-    pos = head.get("pos", [0.3, 0.0, 0.05])
-    pitch = np.radians(float(head.get("pitch_deg", 10.0)))
-    # MuJoCo cameras look along -z with +y up; turn that to look along base +x, then pitch down.
-    look_x = np.array([0.5, 0.5, -0.5, -0.5])
-    tilt = np.array([np.cos(pitch / 2), -np.sin(pitch / 2), 0.0, 0.0])  # about camera x, nose down
-    quat = np.zeros(4)
-    mujoco.mju_mulQuat(quat, look_x, tilt)
-    spec.body(policy.robot.base_body).add_camera(
-        name=HEAD_CAMERA, pos=pos, quat=quat, fovy=float(head.get("fovy", 70.0))
-    )
-
-
 class MujocoBackend:
     def __init__(self, policy: PolicySpec, scene: SceneSpec):
         self.policy = policy
         self.scene = scene
         spec = _robot_spec(policy)
-        _add_head_camera(spec, policy)
         _add_scene(spec, scene)
         spec.option.timestep = policy.sim_dt
         spec.option.integrator = mujoco.mjtIntegrator.mjINT_IMPLICITFAST
