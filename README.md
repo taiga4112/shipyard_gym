@@ -202,6 +202,7 @@ Third-party assets keep their own licenses; see the `LICENSE` and `SOURCE.md` fi
 
 | Path | Source | License |
 |---|---|---|
-| `assets/robots/{go2,a2,g1_29dof}/` | Unitree Robotics (unitree_ros, unitree_mujoco) | BSD-3-Clause |
+| `assets/robots/{go2,a2,g1_29dof}/` (excluding Go2/G1 `usd/`) | Unitree Robotics (unitree_ros, unitree_mujoco) | BSD-3-Clause |
+| `assets/robots/{go2,g1_29dof}/usd/` | Unitree Robotics (HuggingFace `unitreerobotics/unitree_model`) | Licensing unresolved; upstream has no explicit license |
 | `assets/policies/unitree_g1_29dof_velocity_v0/` | Unitree Robotics (unitree_rl_lab) | Apache-2.0 |
 | `assets/sensors/mid360.npy` | Livox (livox_laser_simulation) | MIT |
