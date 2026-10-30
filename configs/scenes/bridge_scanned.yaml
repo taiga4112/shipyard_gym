@@ -1,0 +1,19 @@
+name: bridge_scanned
+description: Environments created from scans within the BRIDGE project
+
+defaults:
+  friction: 1.0
+  collision_exclude: []
+
+scenes:
+  ynu:
+    description: Environment created from a scan of the structural engineering laboratory at Yokohama National University (YNU), as part of the BRIDGE project
+    usd:
+      repo: assets/scenes/bridge_scanned/bridge_ynu_light.usdz
+    collision: authored
+    mujoco:
+      planar_thickness: 0.02  # Add collision thickness below planar floors (metres).
+    spawn:
+      pos: [9.75, 4.75]
+      yaw_deg: 180.0
+      ground_z: -0.0096

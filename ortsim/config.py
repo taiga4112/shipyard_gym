@@ -338,7 +338,9 @@ class SceneSpec:
     training height (20 m), so a deck, roof or overhang above the robot is not read as the
     ground. The value is still base_z - hit_z - offset, as in training."""
     mujoco: dict = None
-    """MuJoCo collision: {collision: convex | hfield, hfield_resolution, hfield_cap, crop}.
+    """MuJoCo collision: {collision: convex | hfield, hfield_resolution, hfield_cap, crop,
+    planar_thickness}. planar_thickness (metres, default 0) extrudes planar triangles
+    into collision prisms in convex mode, extending below floors without filling holes.
     convex (default) decomposes non-convex meshes with CoACD; hfield rasterises the collision
     geometry from above into a height field -- the only workable option for large scans,
     exact for floors, steps and walls but filling in anything under an overhang (surfaces

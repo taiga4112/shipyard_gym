@@ -1,6 +1,18 @@
 # Shipyard Gym
 
+![Shipyard Gym — Robotics for shipyard environments, with a quadruped robot welding and a humanoid robot on a shipyard walkway](docs/media/shipyard-gym-social-preview-root-welding.jpg)
+
+*Concept illustration of robotics in shipyard environments.*
+
 Shipyard Gym is a simulation workspace for exploring general-purpose robot behavior in shipyard environments. It provides a place to try robot capabilities against the terrain and structures they may encounter in shipbuilding, inspect how they behave, and identify what needs to improve.
+
+## Demo
+
+Five-second simulation demos of Unitree Go2 walking in a scanned structural engineering laboratory at Yokohama National University (YNU), created as part of the BRIDGE project.
+
+| Isaac Sim | MuJoCo |
+|---|---|
+| ![Unitree Go2 walking in the scanned YNU laboratory in Isaac Sim](docs/media/bridge_ynu_isaac.webp) | ![Unitree Go2 walking in the scanned YNU laboratory in MuJoCo](docs/media/bridge_ynu_mujoco.webp) |
 
 ## Purpose and approach
 
@@ -86,28 +98,44 @@ In Isaac Sim, Space pauses the simulation. Use X to stop the robot.
 | `--reborn start\|last\|off` | After a fall, respawn at the start, respawn at the pose from about two seconds before the fall, or disable respawning. Default: `start`. |
 | `--show-heightmap` | Display the policy's terrain height map. See the color legend below. |
 | `--record [file.mp4]` | Start recording immediately, optionally to a specified path. |
-| `--duration 20` | Exit after 20 seconds of simulation time. |
+| `--duration 5` | Exit after 5 seconds of simulation time. |
 | `--headless` | Run without a viewer window, for example for batch recording. |
 
 Height-map markers are green for points observed in the current step and red for retained observations. For policies using top-down measurements, red indicates a missed ray or a point outside the measurement range. For policies using accumulated LiDAR, red can also indicate a cell that has not yet been observed.
 
-### Batch recording
+### Reproduce the README demos
 
-Record a selection of scenes without opening a viewer. Output is saved to `videos/` by default. Extend the scene list using the catalog below.
+Record the YNU scene shown above for 5 seconds of simulation time, with a forward command of 0.3 m/s, the rear-right follow camera, and no text overlay. Both recordings use the starting pose in [`configs/scenes/bridge_scanned.yaml`](configs/scenes/bridge_scanned.yaml) and a resolution of 960 × 544 pixels. Run these commands from the repository root in the respective simulator environments; activate the Isaac Lab Python environment for Isaac Sim.
 
-The loops below use Bash syntax (on Windows, use Git Bash or adapt them for PowerShell). MuJoCo uses EGL for headless rendering on Linux and the platform's default rendering backend on macOS and Windows. If you have explicitly set `MUJOCO_GL`, ensure it is supported on your OS; `egl` is not supported on macOS.
+MuJoCo uses EGL for headless rendering on Linux and the platform's default rendering backend on macOS and Windows. If you have explicitly set `MUJOCO_GL`, ensure it is supported on your OS; `egl` is not supported on macOS.
 
 ```bash
 # Isaac Sim
-for scene in basic/0_1 basic/1_1_1 basic/2_1 basic/5_1; do
-  python scripts/run_isaac.py --policy go2_perceptive_mid360_phase5 --scene "$scene" \
-    --headless --record --duration 20 --command 0.6,0,0
-done
+python scripts/run_isaac.py \
+  --policy go2_perceptive_mid360_phase5 --scene bridge_scanned/ynu \
+  --headless --duration 5 --command 0.3,0,0 --camera rear_right \
+  --width 960 --height 544 --no-overlay \
+  --record videos/bridge_ynu_isaac.mp4
 
 # MuJoCo
-for scene in basic/0_1 basic/1_1_1 basic/2_1 basic/5_1; do
-  uv run scripts/run_mujoco.py --policy go2_perceptive_mid360_phase5 --scene "$scene" \
-    --headless --record --duration 20 --command 0.6,0,0
+uv run scripts/run_mujoco.py \
+  --policy go2_perceptive_mid360_phase5 --scene bridge_scanned/ynu \
+  --headless --duration 5 --command 0.3,0,0 --camera rear_right \
+  --width 960 --height 544 --no-overlay \
+  --record videos/bridge_ynu_mujoco.mp4
+```
+
+Convert the MP4 recordings to looping animated WebP at 20 fps using FFmpeg with the `libwebp_anim` encoder. This replaces the demo images embedded above; the original MP4 recordings remain in the Git-ignored `videos/` directory. If the recordings were made on separate PCs, copy both MP4 files into `videos/` on the machine used for conversion, or run the loop for just the available backend.
+
+The loop uses Bash syntax (on Windows, use Git Bash or adapt it for PowerShell).
+
+```bash
+mkdir -p docs/media
+for backend in isaac mujoco; do
+  ffmpeg -y -i "videos/bridge_ynu_${backend}.mp4" \
+    -vf "fps=20" -an \
+    -c:v libwebp_anim -quality 80 -compression_level 4 -loop 0 \
+    "docs/media/bridge_ynu_${backend}.webp"
 done
 ```
 
@@ -164,6 +192,7 @@ Plate steps are narrow vertical plates arranged in a grid. Inverted-L steps add 
 | `basic/5_4` | Slope (15 deg) |
 | `basic/5_5` | Changing gradient |
 | `basic/6_1` | Grating |
+| `bridge_scanned/ynu` | Environment created from a scan of the structural engineering laboratory at Yokohama National University (YNU), as part of the BRIDGE project |
 | `builtin/flat` | Flat ground |
 
 <!-- scenes:end -->
