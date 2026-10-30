@@ -3,8 +3,8 @@
 #   uv run scripts/run_mujoco.py --policy ... --scene ...
 # The Isaac Sim runner uses the Isaac Lab environment instead (see README).
 [project]
-name = "ortsim"
-version = "0.2.0"
+name = "shipyard_gym"
+version = "0.3.0"
 description = "Shipyard robot simulation workspace: run pretrained locomotion policies in Isaac Sim or MuJoCo"
 readme = "README.md"
 license = { text = "MIT" }
