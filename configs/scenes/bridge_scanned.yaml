@@ -14,6 +14,6 @@ scenes:
     mujoco:
       planar_thickness: 0.02  # Add collision thickness below planar floors (metres).
     spawn:
-      pos: [5.0, 2.0]
-      yaw_deg: 0.0
-      ground_z: -0.005
+      pos: [9.75, 4.75]
+      yaw_deg: 180.0
+      ground_z: -0.0096
