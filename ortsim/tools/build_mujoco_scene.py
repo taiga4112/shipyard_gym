@@ -69,16 +69,47 @@ def build(scene: SceneSpec, out: Path, threshold: float) -> None:
     if mj.get("collision", "convex") == "hfield":
         info["hfield"] = _hfield(source, mj, arrays)
     else:
+        planar_thickness = float(mj.get("planar_thickness", 0.0))
+        if not np.isfinite(planar_thickness) or planar_thickness < 0:
+            raise ValueError("mujoco.planar_thickness must be finite and non-negative")
         for i, m in enumerate(source):
             if m.is_flat:
-                continue  # planes have no volume to collide with; they stay raycastable
-            parts = [(m.vertices, m.faces)] if m.is_convex() else _decompose(m, threshold)
+                # Opt in for scanned / authored planes; preserve legacy marker behaviour.
+                parts = _planar_parts(m, planar_thickness) if planar_thickness else []
+            else:
+                parts = [(m.vertices, m.faces)] if m.is_convex() else _decompose(m, threshold)
             for j, (v, f) in enumerate(parts):
                 k = f"c{i}_{j}"
                 arrays[f"{k}_verts"], arrays[f"{k}_faces"] = v, f
                 info["collision"].append({"key": k, "path": m.path})
     out.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(out, info=np.array(json.dumps(info)), **arrays)
+
+
+def _planar_parts(m, thickness: float):
+    """Extrude each triangle into a convex prism, preserving holes and concave outlines.
+
+    Keep the original surface and extend toward the negative dominant normal axis
+    (downward for floors). Winding in scanned meshes is not necessarily consistent.
+    Visual and ray meshes remain the original, zero-thickness surfaces.
+    """
+    faces = np.array([
+        [0, 2, 1], [3, 4, 5],
+        [0, 1, 4], [0, 4, 3],
+        [1, 2, 5], [1, 5, 4],
+        [2, 0, 3], [2, 3, 5],
+    ])
+    for tri in m.vertices[m.faces]:
+        normal = np.cross(tri[1] - tri[0], tri[2] - tri[0])
+        length = np.linalg.norm(normal)
+        if length < 1e-12:
+            continue
+        # The first cap faces away from the extrusion direction.
+        if normal[np.argmax(np.abs(normal))] > 0:
+            tri = tri[[0, 2, 1]]
+            normal = -normal
+        offset = normal * (thickness / length)
+        yield np.concatenate([tri, tri + offset]), faces
 
 
 def _hfield(source, mj: dict, arrays: dict) -> dict:

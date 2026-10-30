@@ -11,6 +11,8 @@ scenes:
     usd:
       repo: assets/scenes/bridge_scanned/bridge_ynu_light.usdz
     collision: authored
+    mujoco:
+      planar_thickness: 0.02  # Add collision thickness below planar floors (metres).
     spawn:
       pos: [5.0, 2.0]
       yaw_deg: 0.0
